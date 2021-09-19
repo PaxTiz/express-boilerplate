@@ -9,6 +9,7 @@ export class User {
 	id!: string
 
 	@Column()
+	@Length(5, 20, { message: 'Le nom d\'utilisateur doit faire entre 5 et 20 caractères' })
 	username!: string
 
 	@Column()
@@ -17,7 +18,7 @@ export class User {
 	password!: string
 
 	@Column()
-	@IsEmail()
+	@IsEmail({}, { message: "L'adresse email n'est pas valide" })
 	email!: string
 
 	@ManyToOne(() => Role, (role) => role.users)

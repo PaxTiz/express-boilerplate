@@ -1,6 +1,5 @@
 import { body } from "express-validator"
 import { validate } from "./middleware"
-import UserService from "../services/users_service"
 
 export default class AuthMiddleware {
 
@@ -11,15 +10,12 @@ export default class AuthMiddleware {
 	]
 
 	static create = [
-		body('username').isString().custom(async (value: string) => {
-			const user = await UserService.findBy('username', value)
-			if (user) return Promise.reject("Le nom d'utilisateur est déjà utilisé")
-		}),
-		body('email').isEmail().custom(async (value: string) => {
-			const user = await UserService.findBy('email', value)
-			if (user) return Promise.reject("L'adresse email est déjà utilisée")
-		}),
-		body('password').isString().isLength({ min: 8 }),
+		body('username').isString(),
+		body('email').isEmail(),
+		body('password')
+			.isString()
+			.isLength({ min: 8 })
+			.withMessage('Le mot de passe doit faire au moins 8 caractères'),
 		validate
 	]
 
