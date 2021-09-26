@@ -20,7 +20,7 @@ module.exports = {
     cache: isProduction
         ? { "duration": process.env.DB_CACHE ?? 60000 }
         : false,
-    entities: [
-        "./src/entities/*.ts"
-    ],
+    entities: isProduction
+        ? [ "./dist/src/entities/*.js" ]
+        : [ "./src/entities/*.ts" ],
 }
