@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import { query, validationResult } from 'express-validator'
 import { Unauthenticated } from '../controllers/controller'
 import userRepository from '../repositories/user_repository'
-import Utils from '../utils/cryptoo'
+import Utils from '../utils/crypto'
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
