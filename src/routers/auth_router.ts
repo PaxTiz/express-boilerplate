@@ -1,10 +1,13 @@
-import { Router } from "express"
-import AuthMiddleware from "../middlewares/auth_middleware"
-import AuthController from "../controllers/auth_controller"
+import { Express, Router } from 'express'
+import controller from '../controllers/auth_controller'
+import middleware from '../middlewares/auth_middleware'
 
-const controller = new AuthController()
-const router = Router()
-router.post('/login', AuthMiddleware.login, controller.login)
-router.post('/register', AuthMiddleware.create, controller.create)
+module.exports = (app: Express) => {
+    const router = Router()
+    app.use('/auth', router)
 
-module.exports = router
+    router.get('/me', middleware.me, controller.me)
+
+    router.post('/login', middleware.login, controller.login)
+    router.post('/register', middleware.create, controller.create)
+}

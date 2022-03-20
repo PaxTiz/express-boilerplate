@@ -1,22 +1,15 @@
-import { body } from "express-validator"
-import { validate } from "./middleware"
+import { body } from 'express-validator'
+import { isAuth, validate } from './middleware'
 
-export default class AuthMiddleware {
+export default {
+    login: [body('username').isString().trim(), body('password').isString().trim(), validate],
 
-	static login = [
-		body('username').isString(),
-		body('password').isString(),
-		validate
-	]
+    create: [
+        body('username').isString().isLength({ min: 4, max: 20 }).trim(),
+        body('email').isEmail().trim(),
+        body('password').isString().isLength({ min: 8 }).trim(),
+        validate,
+    ],
 
-	static create = [
-		body('username').isString(),
-		body('email').isEmail(),
-		body('password')
-			.isString()
-			.isLength({ min: 8 })
-			.withMessage('Le mot de passe doit faire au moins 8 caractères'),
-		validate
-	]
-
+    me: [isAuth],
 }
