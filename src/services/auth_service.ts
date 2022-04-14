@@ -25,13 +25,13 @@ export default {
         /** Is the username already taken ? */
         const usernameExists = await userRepository.exists('username', username)
         if (usernameExists) {
-            errors.push(new FormError('username', 'username_alredy_in_use'))
+            errors.push(new FormError('username', 'username_already_in_use'))
         }
 
         /** Is the email already taken ? */
         const emailExists = await userRepository.exists('email', email)
         if (emailExists) {
-            errors.push(new FormError('email', 'email_alredy_in_use'))
+            errors.push(new FormError('email', 'email_already_in_use'))
         }
 
         if (errors.length > 0) {
