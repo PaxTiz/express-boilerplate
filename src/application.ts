@@ -35,24 +35,26 @@ export default class Application {
     }
 
     private initSentry() {
-        Sentry.init({
-            dsn: process.env.SENTRY_URL,
-            integrations: [
-                new Sentry.Integrations.Http({ tracing: true }),
-                new Tracing.Integrations.Express({ app: this.app }),
-            ],
-            tracesSampleRate: 1.0,
-            debug: this.isDevelopment,
-            environment: process.env.APP_ENV,
-            attachStacktrace: true,
-            autoSessionTracking: true,
-        })
-        this.app.use(
-            Sentry.Handlers.requestHandler({
-                user: ['id', 'username', 'email', 'roleId'],
-            }),
-        )
-        this.app.use(Sentry.Handlers.tracingHandler())
+        if (process.env.ENABLE_SENTRY === 'true') {
+            Sentry.init({
+                dsn: process.env.SENTRY_URL,
+                integrations: [
+                    new Sentry.Integrations.Http({ tracing: true }),
+                    new Tracing.Integrations.Express({ app: this.app }),
+                ],
+                tracesSampleRate: 1.0,
+                debug: this.isDevelopment,
+                environment: process.env.APP_ENV,
+                attachStacktrace: true,
+                autoSessionTracking: true,
+            })
+            this.app.use(
+                Sentry.Handlers.requestHandler({
+                    user: ['id', 'username', 'email', 'roleId'],
+                }),
+            )
+            this.app.use(Sentry.Handlers.tracingHandler())
+        }
     }
 
     private initMiddlewares() {
