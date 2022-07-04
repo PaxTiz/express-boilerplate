@@ -31,17 +31,30 @@ export function validate(req: Request, res: Response, next: NextFunction) {
     next()
 }
 
+const getToken = (req: Request) => {
+    if (req.cookies.token) {
+        return req.cookies.token
+    }
+
+    if (req.get('authorization')) {
+        const parts = req.get('authorization')?.split(' ')
+        if (!parts || parts.length < 2) {
+            return null
+        }
+        return parts[1]
+    }
+}
+
 /**
- * Deny access if no Authorization header is present
- * or JWT token is not valid
+ * Deny access if there is no authentication method
+ * JWT token can be sent in Authorization or Cookies header
  */
 export async function isAuth(req: Request, res: Response, next: NextFunction) {
-    const header = req.get('authorization')
-    if (!header) {
+    const token = getToken(req)
+    if (!token) {
         return Unauthenticated(res)
     }
 
-    const token = header.split(' ')[1].trim()
     const user = Utils.decodeJWT(token) as { id: number }
     if (!user) {
         return Unauthenticated(res)
