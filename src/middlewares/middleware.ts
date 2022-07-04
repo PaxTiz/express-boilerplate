@@ -1,8 +1,10 @@
 import { user as User } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
-import { query, validationResult } from 'express-validator'
+import fileUploadMiddleware from 'express-fileupload'
+import { body, query, validationResult } from 'express-validator'
+import { extname } from 'path'
 import { Unauthenticated } from '../controllers/controller'
-import userRepository from '../repositories/user_repository'
+import userService from '../services/users_service'
 import Utils from '../utils/crypto'
 
 declare global {
@@ -45,13 +47,47 @@ export async function isAuth(req: Request, res: Response, next: NextFunction) {
         return Unauthenticated(res)
     }
 
-    const fromDb = await userRepository.findOneBy('id', user.id)
+    const fromDb = await userService.findOneBy('id', user.id)
     if (!fromDb) {
         return Unauthenticated(res)
     }
     req.user = fromDb
     req.auth = true
     return next()
+}
+
+type FileUploadOptions = {
+    name: string
+    extensions?: string | Array<string>
+    required?: boolean
+}
+export const fileUpload = (limit: number | undefined = undefined) => {
+    return fileUploadMiddleware({
+        limits: { fileSize: limit },
+        debug: process.env.ENABLE_FILE_UPLOAD_LOGS === 'true',
+        responseOnLimit: 'file_too_big',
+    })
+}
+
+export const file = (options: FileUploadOptions) => {
+    const required = options.required === undefined ? true : options.required
+    return body(`files.${options.name}`).custom((value, { req }) => {
+        const exists = req.files && req.files[options.name]
+        if (!exists && required) {
+            throw Error('required_file')
+        }
+        if (exists && options.extensions) {
+            const extensionsArray = Array.isArray(options.extensions)
+                ? options.extensions
+                : [options.extensions]
+            const extensions = extensionsArray.map((e) => `.${e}`)
+            if (!extensions.includes(extname(req.files[options.name].name))) {
+                throw Error('invalid_extension')
+            }
+        }
+
+        return true
+    })
 }
 
 export const applyCommonFilters = [

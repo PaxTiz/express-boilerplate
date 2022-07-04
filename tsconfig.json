@@ -7,13 +7,15 @@
     "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
-    "rootDir": "./",
+    "rootDir": "./src",
     "outDir": "./dist",
     "esModuleInterop": true,
     "strict": true,
     "emitDecoratorMetadata": true
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./prisma",
+    "./test",
   ]
 }
