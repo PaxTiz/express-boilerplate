@@ -1,4 +1,4 @@
-import { user as User } from '@prisma/client'
+import { User } from '@prisma/client'
 import { NextFunction, Request, Response } from 'express'
 import fileUploadMiddleware from 'express-fileupload'
 import { body, query, validationResult } from 'express-validator'

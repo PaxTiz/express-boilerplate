@@ -3,7 +3,7 @@ const prisma = new PrismaClient({
     log: process.env.APP_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : [],
 })
 
-export type UserWithRole = Prisma.userGetPayload<{
+export type UserWithRole = Prisma.UserGetPayload<{
     include: { role: true }
 }>
 

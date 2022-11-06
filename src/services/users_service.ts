@@ -1,4 +1,4 @@
-import { user } from '@prisma/client'
+import { User } from '@prisma/client'
 import prisma, { UserWithRole } from '../client'
 import roleService from './roles_service'
 
@@ -16,7 +16,7 @@ export default {
         return count > 0
     },
 
-    async findOneBy(column: string, value: unknown): Promise<user | null> {
+    async findOneBy(column: string, value: unknown): Promise<User | null> {
         return await prisma.user.findFirst({
             where: { [column]: value },
             include: { role: true },
