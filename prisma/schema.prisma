@@ -7,66 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model role {
+model Role {
   id          String @id @default(uuid())
   name        String @db.VarChar(255)
   displayName String @db.VarChar(255)
-  user        user[]
+  user        User[]
 }
 
-model user {
+model User {
   id       String @id @default(uuid())
   username String @db.VarChar(255)
   password String @db.VarChar(255)
   email    String @db.VarChar(255)
   roleId   String @db.VarChar(36)
-  role     role   @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  role     Role   @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([roleId])
-}
-
-model courses {
-  id          String    @id @default(uuid())
-  name        String    @db.VarChar(255)
-  language_id String    @db.VarChar(36)
-  language    languages @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  levels      level[]
-}
-
-model languages {
-  id      String    @id @default(uuid())
-  name    String    @unique @db.VarChar(255)
-  code    String    @unique @db.VarChar(3)
-  courses courses[]
-}
-
-model lessons {
-  id        String      @id @default(uuid())
-  level_id  String      @db.VarChar(36)
-  level     level       @relation(fields: [level_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  questions questions[]
-}
-
-model level {
-  id        String    @id @default(uuid())
-  level     Int
-  course_id String    @db.VarChar(36)
-  course    courses   @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  lessons   lessons[]
-}
-
-model question_types {
-  id        String      @id @default(uuid())
-  name      String      @db.VarChar(255)
-  questions questions[]
-}
-
-model questions {
-  id               String @id @default(uuid())
-  content          Json
-  lesson_id        String @db.VarChar(36)
-  question_type_id String @db.VarChar(36)
-
-  lesson        lessons        @relation(fields: [lesson_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  question_type question_types @relation(fields: [question_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
