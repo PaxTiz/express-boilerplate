@@ -94,7 +94,7 @@ export function ServiceResponse(res: Response, data: unknown, status = 200) {
     }
     if (
         data instanceof FormError ||
-        (Array.isArray(data) && data.every((e) => e instanceof FormError))
+        (Array.isArray(data) && data.length && data.every((e) => e instanceof FormError))
     ) {
         return UnprocessableEntity(res, data)
     }
